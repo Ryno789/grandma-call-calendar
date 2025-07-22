@@ -2,12 +2,65 @@
 <html>
 <head>
   <meta charset="utf-8" />
+  <title>📞 Grandma's Call Calendar</title>
+
+  <!-- FullCalendar Global Bundle (replaces separate CSS/JS CDN links) -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>
-  <script src="app.js" defer></script>
+  
+  <!-- Your custom styles -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h2>📞 Grandma's Call Calendar</h2>
+
+  <!-- Calendar container -->
   <div id="calendar"></div>
+
+  <!--
+    Form Modal: inserted to let users pick a slot.
+    It’s hidden by default, shown when someone selects on the calendar.
+  -->
+  <div id="formModal" class="modal">
+    <div class="modal-content">
+      <span id="closeModal" class="close">&times;</span>
+      <h3>Schedule a Call</h3>
+      <form id="scheduleForm">
+        <!-- Hidden inputs populated on calendar select -->
+        <input type="hidden" name="date" />
+        <input type="hidden" name="startTime" />
+        <input type="hidden" name="endTime" />
+
+        <!-- Dropdown of predefined callers: inserted -->
+        <label>Your Name:
+          <select name="callerName" required>
+            <option value="">– select –</option>
+            <option value="Ryan">Ryan</option>
+            <option value="Mom">Mom</option>
+            <option value="Uncle Joe">Uncle Joe</option>
+            <!-- add more family members here -->
+          </select>
+        </label>
+
+        <!-- Recurrence controls: inserted -->
+        <div class="recurrence">
+          <label><input type="checkbox" name="recur"> Repeat weekly?</label>
+          <div id="dowOptions">
+            <label><input type="checkbox" name="dow" value="1">Mon</label>
+            <label><input type="checkbox" name="dow" value="2">Tue</label>
+            <label><input type="checkbox" name="dow" value="3">Wed</label>
+            <label><input type="checkbox" name="dow" value="4">Thu</label>
+            <label><input type="checkbox" name="dow" value="5">Fri</label>
+            <label><input type="checkbox" name="dow" value="6">Sat</label>
+            <label><input type="checkbox" name="dow" value="0">Sun</label>
+          </div>
+        </div>
+
+        <button type="submit">Save</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Your application logic -->
+  <script src="app.js"></script>
 </body>
 </html>
