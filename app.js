@@ -22,3 +22,13 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   calendar.render();
 });
+function handleNewSelection(info) {
+  // populate ISO date/time in hidden inputs
+  form.date.value      = info.startStr.slice(0,10);
+  form.startTime.value = info.startStr.slice(11,16);
+  form.endTime.value   = info.endStr.slice(11,16);
+  form.recur.checked   = false;
+  formModal.show();     // your favorite modal library or vanilla toggle
+  calendar.unselect();  // clear highlight until form submission
+}
+
