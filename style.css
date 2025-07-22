@@ -1,19 +1,63 @@
+/* Basic page styling */
 body {
   font-family: sans-serif;
   padding: 20px;
   text-align: center;
+  margin: 0;
 }
+
+#calendar {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Modal styling: inserted around the form */
+.modal {
+  display: none; /* shown via JS */
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+}
+.modal-content {
+  background: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  max-width: 400px;
+  border-radius: 4px;
+  text-align: left;
+}
+.close {
+  float: right;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+/* Recurrence checkboxes spacing */
+.recurrence { margin: 12px 0; }
+#dowOptions label { margin-right: 6px; font-size: 0.9em; }
+
+/* FullCalendar event block tweaks: inserted */
+.fc .fc-daygrid-event {
+  padding: 4px;
+  font-size: 0.9em;
+  white-space: normal;
+}
+
+/* Print only the calendar, one page: inserted */
 @media print {
-  body * {
-    visibility: hidden;
-  }
+  body * { visibility: hidden; }
   #calendar, #calendar * {
     visibility: visible;
   }
   #calendar {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     width: 100%;
+  }
+  .fc .fc-daygrid-event {
+    page-break-inside: avoid;
   }
 }
