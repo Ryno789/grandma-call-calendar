@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     events: async function(info, successCallback) {
       const res = await fetch('https://api.sheety.co/bb40ccff6c18ebdc8dc88590a23aea62/grandmaPhoneCallCalendarDatabase/sheet1');
       const data = await res.json();
+      console.log(data);
       const events = data.sheet1.map(row => ({
         title: row.callerName,
         start: `${row.date}T${row.startTime}`,
