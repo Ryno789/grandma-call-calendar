@@ -2,27 +2,34 @@ document.addEventListener('DOMContentLoaded', function() {
   // 1) Your Sheety API endpoint
   const SHEET_API_URL = 'https://api.sheety.co/yourusername/yourproject/sheet1';
 
-  // 2) Define a color for each person: inserted
+  // 2) Map each caller to a custom color
   const personColor = {
     'Ryan':      '#007bff',
     'Mom':       '#e83e8c',
     'Uncle Joe': '#28a745'
-    // add more mappings as needed
+    // add more name → color mappings here
   };
 
-  // 3) Grab calendar and modal/form elements: inserted
+  // 3) Grab DOM elements
   const calendarEl = document.getElementById('calendar');
   const formModal  = document.getElementById('formModal');
   const closeModal = document.getElementById('closeModal');
   const form       = document.getElementById('scheduleForm');
 
-  // Utility: choose view by screen width (mobile-friendly): inserted
+  // 4) Choose view based on screen width (mobile vs desktop)
   function getView() {
     return window.innerWidth < 600 ? 'listMonth' : 'dayGridMonth';
   }
 
-  // 4) Initialize FullCalendar with selection, mobile toggle, block events: inserted
+  // 5) Initialize FullCalendar
   const calendar = new FullCalendar.Calendar(calendarEl, {
+    plugins: [
+      FullCalendar.dayGridPlugin,
+      FullCalendar.timeGridPlugin,
+      FullCalendar.listPlugin,
+      FullCalendar.interactionPlugin
+    ],
+
     initialView: getView(),
     headerToolbar: {
       left:   'prev,next today',
@@ -31,18 +38,19 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     windowResize: () => calendar.changeView(getView()),
 
-    selectable:       true,      // clicked-and-drag for new slot
+    selectable:       true,   // allow click-&-drag
     selectMirror:     true,
-    selectMinDistance: 2,        // tiny drag still selects
+    selectMinDistance: 2,
 
-    eventDisplay:     'block',   // solid bars instead of dots
-    dayMaxEventRows:  true,
-    moreLinkClick:    'popover',
+    eventDisplay:    'block', // solid bars
+    dayMaxEventRows: true,
+    moreLinkClick:   'popover',
 
-    // 5) Load existing events from Google Sheet: inserted
-    events: async function(fetchInfo, successCallback) {
+    // 6) Load existing events
+    events: async (info, successCallback) => {
       const res  = await fetch(SHEET_API_URL);
       const data = await res.json();
+      // `data.sheet1` must match your sheet name exactly
       const events = data.sheet1.map(row => ({
         title: row.callerName,
         start: `${row.date}T${row.startTime}`,
@@ -52,13 +60,12 @@ document.addEventListener('DOMContentLoaded', function() {
       successCallback(events);
     },
 
-    // 6) When user selects a range, show the form: inserted
-    select: function(info) {
-      // populate hidden inputs
-      form.date.value      = info.startStr.slice(0, 10);
-      form.startTime.value = info.startStr.slice(11, 16);
-      form.endTime.value   = info.endStr.slice(11, 16);
-      // reset recurrence
+    // 7) On user selection, open modal & populate hidden inputs
+    select: info => {
+      form.date.value      = info.startStr.slice(0,10);
+      form.startTime.value = info.startStr.slice(11,16);
+      form.endTime.value   = info.endStr.slice(11,16);
+
       form.recur.checked = false;
       form.querySelectorAll('input[name="dow"]').forEach(cb => cb.checked = false);
 
@@ -69,14 +76,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
   calendar.render();
 
-  // 7) Close modal on “×”: inserted
+  // 8) Close modal on “×”
   closeModal.onclick = () => formModal.style.display = 'none';
 
-  // 8) Handle form submission: inserted
-  form.addEventListener('submit', async function(e) {
+  // 9) Handle form submission (single + weekly recurrence)
+  form.addEventListener('submit', async e => {
     e.preventDefault();
 
-    // Build base event object
+    // Base event payload
     const ev = {
       date:       form.date.value,
       startTime:  form.startTime.value,
@@ -84,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
       callerName: form.callerName.value
     };
 
-    // Helper to POST to Sheety + render on calendar
+    // Helper to POST & render
     async function postAndRender(eventData) {
       await fetch(SHEET_API_URL, {
         method: 'POST',
@@ -92,32 +99,31 @@ document.addEventListener('DOMContentLoaded', function() {
         body: JSON.stringify({ sheet1: eventData })
       });
       calendar.addEvent({
-        title:   eventData.callerName,
-        start:   `${eventData.date}T${eventData.startTime}`,
-        end:     `${eventData.date}T${eventData.endTime}`,
-        color:   personColor[eventData.callerName] || '#3788d8',
+        title: eventData.callerName,
+        start: `${eventData.date}T${eventData.startTime}`,
+        end:   `${eventData.date}T${eventData.endTime}`,
+        color: personColor[eventData.callerName] || '#3788d8',
         display: 'block'
       });
     }
 
-    // 9) Handle recurrence if checked: inserted
+    // Weekly recurrence?
     if (form.recur.checked) {
-      // get selected weekdays
       const days = Array.from(form.querySelectorAll('input[name="dow"]:checked'))
-                       .map(cb => parseInt(cb.value, 10));
-      // schedule next 4 weeks
-      let startDate = new Date(`${ev.date}T${ev.startTime}`);
-      for (let week = 0; week < 4; week++) {
-        days.forEach(dayOfWeek => {
-          let dt = new Date(startDate);
-          // shift to this week's target dow
-          dt.setDate(dt.getDate() + ((dayOfWeek + 7 - dt.getDay()) % 7) + 7*week);
-          const isoDate = dt.toISOString().slice(0,10);
-          postAndRender({ ...ev, date: isoDate });
+                        .map(cb => parseInt(cb.value,10));
+      const startDate = new Date(`${ev.date}T${ev.startTime}`);
+
+      // Generate 4 weeks of bookings
+      for (let w = 0; w < 4; w++) {
+        days.forEach(dow => {
+          const dt = new Date(startDate);
+          dt.setDate(dt.getDate() + ((dow + 7 - dt.getDay()) % 7) + 7*w);
+          const iso = dt.toISOString().slice(0,10);
+          postAndRender({ ...ev, date: iso });
         });
       }
     } else {
-      // single booking
+      // Single booking
       await postAndRender(ev);
     }
 
