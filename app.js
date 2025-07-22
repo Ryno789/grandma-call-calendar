@@ -1,6 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
   let calendarEl = document.getElementById('calendar');
   let calendar = new FullCalendar.Calendar(calendarEl, {
+  plugins: [ 'dayGrid', 'interaction' ],
+  initialView: 'dayGridMonth',
+  selectable: true,          // allows click-and-drag to select
+  selectMirror: true,        // shows placeholder while dragging
+  selectMinDistance: 2,      // small drag still counts
+  select: handleNewSelection
     initialView: 'dayGridMonth',
     events: async function(info, successCallback) {
       const res = await fetch('https://api.sheety.co/bb40ccff6c18ebdc8dc88590a23aea62/grandmaPhoneCallCalendarDatabase/sheet1');
