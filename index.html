@@ -2,61 +2,102 @@
 <html>
 <head>
   <meta charset="utf-8" />
+  <!-- UPDATED: Added viewport meta tag for better mobile responsiveness -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>📞 Grandma's Call Calendar</title>
-
   <!-- 1) FullCalendar global bundle (includes all core + plugins) -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>
-
   <!-- 2) Your custom styles (modal, print, event tweaks) -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h2>📞 Grandma's Call Calendar</h2>
-
-  <!-- 3) Calendar Container -->
-  <div id="calendar"></div>
-
-  <!-- 4) Modal Form: hidden by default; opens on calendar.select -->
-  <div id="formModal" class="modal">
-    <div class="modal-content">
-      <span id="closeModal" class="close">&times;</span>
-      <h3>Schedule a Call</h3>
-      <form id="scheduleForm">
-        <!-- 5) Hidden inputs for the selected date/time -->
-        <input type="hidden" name="date" />
-        <input type="hidden" name="startTime" />
-        <input type="hidden" name="endTime" />
-
-        <!-- 6) Dropdown of predefined callers -->
-        <label>Your Name:
-          <select name="callerName" required>
-            <option value="">– select –</option>
-            <option value="Ryan">Ryan</option>
-            <option value="Mom">Mom</option>
-            <option value="Uncle Joe">Uncle Joe</option>
-            <!-- add more family members here -->
-          </select>
-        </label>
-
-        <!-- 7) Weekly recurrence controls -->
-        <div class="recurrence">
-          <label><input type="checkbox" name="recur" /> Repeat weekly?</label>
-          <div id="dowOptions">
-            <label><input type="checkbox" name="dow" value="1" /> Mon</label>
-            <label><input type="checkbox" name="dow" value="2" /> Tue</label>
-            <label><input type="checkbox" name="dow" value="3" /> Wed</label>
-            <label><input type="checkbox" name="dow" value="4" /> Thu</label>
-            <label><input type="checkbox" name="dow" value="5" /> Fri</label>
-            <label><input type="checkbox" name="dow" value="6" /> Sat</label>
-            <label><input type="checkbox" name="dow" value="0" /> Sun</label>
+  <!-- UPDATED: Added container div for better layout control -->
+  <div class="container">
+    <!-- UPDATED: Made title larger and more prominent for seniors -->
+    <h1>📞 Grandma's Call Calendar</h1>
+    
+    <!-- NEW: Added instructions section to help users understand how to use the calendar -->
+    <div class="instructions">
+      <p><strong>How to schedule a call:</strong></p>
+      <ol>
+        <li>Click and drag on the calendar to select your preferred time slot</li>
+        <li>Choose your name from the dropdown</li>
+        <li>Optionally set up weekly recurring calls</li>
+        <li>Click "Save" to confirm your time slot</li>
+      </ol>
+    </div>
+    
+    <!-- 3) Calendar Container -->
+    <div id="calendar"></div>
+    
+    <!-- 4) Modal Form: hidden by default; opens on calendar.select -->
+    <div id="formModal" class="modal">
+      <div class="modal-content">
+        <span id="closeModal" class="close">&times;</span>
+        <!-- UPDATED: Made heading more descriptive -->
+        <h2>Schedule Your Call with Grandma</h2>
+        <form id="scheduleForm">
+          <!-- 5) Hidden inputs for the selected date/time -->
+          <input type="hidden" name="date" />
+          <input type="hidden" name="startTime" />
+          <input type="hidden" name="endTime" />
+          
+          <!-- NEW: Display selected time slot for confirmation -->
+          <div class="time-display">
+            <p><strong>Selected Time:</strong></p>
+            <p id="selectedTimeDisplay">Please select a time slot on the calendar</p>
           </div>
-        </div>
-
-        <button type="submit">Save</button>
-      </form>
+          
+          <!-- 6) UPDATED: Enhanced dropdown with better styling and more family members -->
+          <div class="form-group">
+            <label for="callerName">Your Name:</label>
+            <select name="callerName" id="callerName" required>
+              <option value="">– Choose Your Name –</option>
+              <option value="Ryan">Ryan</option>
+              <option value="Mom">Mom</option>
+              <option value="Uncle Joe">Uncle Joe</option>
+              <option value="Sarah">Sarah</option>
+              <option value="Dad">Dad</option>
+              <option value="Aunt Mary">Aunt Mary</option>
+              <!-- add more family members here as needed -->
+            </select>
+          </div>
+          
+          <!-- 7) UPDATED: Enhanced weekly recurrence controls with better layout -->
+          <div class="recurrence">
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" name="recur" id="recur" /> 
+                <span class="checkmark"></span>
+                Repeat this call weekly?
+              </label>
+            </div>
+            
+            <!-- NEW: Days of week selection appears when recur is checked -->
+            <div id="dowOptions" style="display: none;">
+              <p><strong>Select days to repeat:</strong></p>
+              <div class="day-buttons">
+                <label class="day-button"><input type="checkbox" name="dow" value="1" /><span>Mon</span></label>
+                <label class="day-button"><input type="checkbox" name="dow" value="2" /><span>Tue</span></label>
+                <label class="day-button"><input type="checkbox" name="dow" value="3" /><span>Wed</span></label>
+                <label class="day-button"><input type="checkbox" name="dow" value="4" /><span>Thu</span></label>
+                <label class="day-button"><input type="checkbox" name="dow" value="5" /><span>Fri</span></label>
+                <label class="day-button"><input type="checkbox" name="dow" value="6" /><span>Sat</span></label>
+                <label class="day-button"><input type="checkbox" name="dow" value="0" /><span>Sun</span></label>
+              </div>
+              <!-- NEW: Note about recurring bookings -->
+              <p class="note">This will create 4 weeks of recurring calls</p>
+            </div>
+          </div>
+          
+          <!-- UPDATED: Enhanced save button -->
+          <button type="submit" class="save-btn">💾 Save My Call Time</button>
+          <button type="button" class="cancel-btn" id="cancelBtn">Cancel</button>
+        </form>
+      </div>
     </div>
   </div>
-
+  
   <!-- 8) Your application logic -->
   <script src="app.js"></script>
 </body>
