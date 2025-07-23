@@ -275,7 +275,9 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         }
         
-        alert(`Successfully scheduled ${days.length * 4} recurring call${days.length * 4 > 1 ? 's' : ''} for ${ev.callerName}!`);
+        const totalCalls = days.length * 4;
+        const plural = totalCalls > 1 ? 's' : '';
+        alert(`Successfully scheduled ${totalCalls} recurring call${plural} for ${ev.callerName}!`);
       } else {
         // Single booking
         await postAndRender(ev);
