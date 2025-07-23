@@ -1,313 +1,388 @@
-document.addEventListener('DOMContentLoaded', function() {
-  // 1) Your Sheety API endpoint
-  const SHEET_API_URL = 'https://api.sheety.co/bb40ccff6c18ebdc8dc88590a23aea62/grandmaPhoneCallCalendarDatabase/sheet1';
+document.addEventListener("DOMContentLoaded", () => {
+  // --- CONFIGURATION ---
+  const SHEETY_API_URL =
+    "https://api.sheety.co/bb40ccff6c18ebdc8dc88590a23aea62/grandmaPhoneCallCalendarDatabase/sheet1";
 
-  // 2) UPDATED: Enhanced color mapping with more vibrant colors for better visibility
-  const personColor = {
-    'Ryan':       '#007bff',  // Bright blue
-    'Mom':        '#e83e8c',  // Pink
-    'Uncle Joe':  '#28a745',  // Green
-    'Sarah':      '#fd7e14',  // Orange
-    'Dad':        '#6f42c1',  // Purple
-    'Aunt Mary':  '#20c997',  // Teal
-    // add more name → color mappings here as needed
+  const familyMembers = {
+    Ryan: "#4A90E2",
+    Francine: "#F5A623",
+    Peter: "#50E3C2",
+    Alice: "#BD10E0",
+    James: "#B8E986",
+    Sophia: "#E01053"
   };
 
-  // 3) Grab DOM elements
-  const calendarEl = document.getElementById('calendar');
-  const formModal  = document.getElementById('formModal');
-  const closeModal = document.getElementById('closeModal');
-  const form       = document.getElementById('scheduleForm');
-  
-  // NEW: Additional DOM elements for enhanced functionality
-  const cancelBtn = document.getElementById('cancelBtn');
-  const recurCheckbox = document.getElementById('recur');
-  const dowOptions = document.getElementById('dowOptions');
-  const selectedTimeDisplay = document.getElementById('selectedTimeDisplay');
+  // --- DOM ELEMENTS ---
+  const calendarGrid = document.getElementById("calendar-grid");
+  const currentMonthYearEl = document.getElementById("current-month-year");
+  const modal = document.getElementById("event-modal");
+  const modalForm = document.getElementById("event-form");
+  const modalTitle = document.getElementById("modal-title");
+  const loader = document.getElementById("loader");
+  const legendList = document.getElementById("legend-list");
+  const callerNameSelect = document.getElementById("callerName");
+  const startTimeSelect = document.getElementById("startTime");
+  const dailyEventsTitle = document.getElementById("daily-events-title");
+  const dailyEventsList = document.getElementById("daily-events-list");
+  const successModal = document.getElementById("success-modal");
 
-  // 4) UPDATED: Better responsive view selection
-  function getView() {
-    const width = window.innerWidth;
-    if (width < 480) {
-      return 'listMonth';  // Mobile phones get list view
-    } else if (width < 768) {
-      return 'dayGridMonth';  // Tablets get day grid
-    } else {
-      return 'dayGridMonth';  // Desktop gets day grid
+  // --- STATE ---
+  let currentDate = new Date(); // Mutable per month nav
+  let events = [];
+  let selectedDateStr = new Date().toISOString().split("T")[0];
+  let successTimeout;
+
+  // --- HELPERS ---
+  const showLoader = () => loader.classList.remove("hidden");
+  const hideLoader = () => loader.classList.add("hidden");
+
+  const formatTime12Hour = (time24) => {
+    if (!time24) return "";
+    const [h, m] = time24.split(":");
+    const hour = parseInt(h, 10);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:${m} ${ampm}`;
+  };
+
+  const fetchEvents = async () => {
+    showLoader();
+    try {
+      const response = await fetch(SHEETY_API_URL);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      events = data.sheet1 || [];
+
+      renderCalendar();
+      renderDailyEvents(selectedDateStr);
+    } catch (err) {
+      console.error("Error fetching events:", err);
+      alert("Could not load events. Please check your connection or API.");
+    } finally {
+      hideLoader();
     }
-  }
+  };
 
-  // NEW: Function to format time display for users
-  function formatTimeDisplay(start, end) {
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-    const options = { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit'
-    };
-    
-    const startStr = startDate.toLocaleDateString('en-US', options);
-    const endTime = endDate.toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
-      minute: '2-digit' 
+  const renderCalendar = () => {
+    // Don't mutate global currentDate!
+    const baseDate = new Date(currentDate);
+    baseDate.setDate(1);
+
+    calendarGrid.innerHTML = "";
+    const month = baseDate.getMonth();
+    const year = baseDate.getFullYear();
+    currentMonthYearEl.textContent = `${baseDate.toLocaleString("default", {
+      month: "long"
+    })} ${year}`;
+
+    const firstDayIndex = baseDate.getDay();
+    const lastDay = new Date(year, month + 1, 0).getDate();
+    const prevLastDay = new Date(year, month, 0).getDate();
+    const lastDayIndex = new Date(year, month + 1, 0).getDay();
+    const nextDays = 6 - lastDayIndex;
+
+    // Weekday headers
+    ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].forEach((d) => {
+      calendarGrid.innerHTML += `<div class="calendar-day-header">${d}</div>`;
     });
-    
-    return `${startStr} to ${endTime}`;
-  }
 
-  // 5) UPDATED: Enhanced FullCalendar initialization with better mobile support
-  const calendar = new FullCalendar.Calendar(calendarEl, {
-    plugins: [
-      FullCalendar.dayGridPlugin,
-      FullCalendar.timeGridPlugin,
-      FullCalendar.listPlugin,
-      FullCalendar.interactionPlugin
-    ],
-
-    initialView: getView(),
-    
-    // UPDATED: Better header toolbar for mobile
-    headerToolbar: {
-      left:   'prev,next',
-      center: 'title',
-      right:  window.innerWidth < 600 ? 'listMonth,dayGridMonth' : 'dayGridMonth,timeGridWeek,listMonth'
-    },
-    
-    // NEW: Better responsive handling
-    windowResize: () => {
-      const newView = getView();
-      if (calendar.view.type !== newView) {
-        calendar.changeView(newView);
-      }
-      
-      // Update header toolbar for mobile
-      calendar.setOption('headerToolbar', {
-        left:   'prev,next',
-        center: 'title',
-        right:  window.innerWidth < 600 ? 'listMonth,dayGridMonth' : 'dayGridMonth,timeGridWeek,listMonth'
-      });
-    },
-
-    selectable:       true,
-    selectMirror:     true,
-    selectMinDistance: 2,
-
-    // UPDATED: Enhanced event display settings
-    eventDisplay:    'block',
-    dayMaxEventRows: false,  // Show all events, don't truncate
-    moreLinkClick:   'popover',
-    
-    // NEW: Better height handling for mobile
-    height: window.innerWidth < 600 ? 'auto' : 650,
-    
-    // NEW: Enhanced event styling
-    eventDidMount: function(info) {
-      // Add tooltip with caller name and time
-      info.el.title = `${info.event.title} - ${info.event.start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} to ${info.event.end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
-    },
-
-    // 6) Load existing events
-    events: async (info, successCallback) => {
-      try {
-        const res  = await fetch(SHEET_API_URL);
-        const data = await res.json();
-        
-        // `data.sheet1` must match your sheet name exactly
-        const events = data.sheet1.map(row => ({
-          title: row.callerName,
-          start: `${row.date}T${row.startTime}`,
-          end:   `${row.date}T${row.endTime}`,
-          color: personColor[row.callerName] || '#6c757d',  // Default gray if person not in color map
-          textColor: 'white',  // Ensure text is readable
-          borderColor: personColor[row.callerName] || '#6c757d'
-        }));
-        
-        successCallback(events);
-      } catch (error) {
-        console.error('Error loading events:', error);
-        successCallback([]);  // Return empty array if error
-      }
-    },
-
-    // 7) UPDATED: Enhanced selection handling with better user feedback
-    select: info => {
-      // Set the hidden form values
-      form.date.value      = info.startStr.slice(0,10);
-      form.startTime.value = info.startStr.slice(11,16);
-      form.endTime.value   = info.endStr.slice(11,16);
-
-      // NEW: Update the time display for user confirmation
-      selectedTimeDisplay.textContent = formatTimeDisplay(info.start, info.end);
-      
-      // Reset form state
-      form.callerName.value = '';
-      form.recur.checked = false;
-      dowOptions.style.display = 'none';
-      form.querySelectorAll('input[name="dow"]').forEach(cb => cb.checked = false);
-
-      // Show modal
-      formModal.style.display = 'block';
-      
-      // NEW: Focus on the name dropdown for better UX
-      setTimeout(() => form.callerName.focus(), 100);
-      
-      calendar.unselect();
+    for (let x = firstDayIndex; x > 0; x--) {
+      calendarGrid.innerHTML += `<div class="calendar-day other-month"><div class="date-number">${
+        prevLastDay - x + 1
+      }</div></div>`;
     }
-  });
 
-  calendar.render();
+    for (let i = 1; i <= lastDay; i++) {
+      const dateObj = new Date(year, month, i);
+      const dateStr = dateObj.toISOString().split("T")[0];
+      const isToday = dateStr === new Date().toISOString().split("T")[0];
+      const isSelected = dateStr === selectedDateStr;
+      const dayEvents = events.filter((e) => e.date === dateStr);
 
-  // 8) UPDATED: Enhanced modal close functionality
-  function closeModalFunction() {
-    formModal.style.display = 'none';
-    calendar.unselect();  // Clear any selection
-  }
+      let html = `<div class="calendar-day ${
+        isSelected ? "selected" : ""
+      }" data-date="${dateStr}">
+        <div class="date-number ${isToday ? "today" : ""}">${i}
+        ${
+          dayEvents.length ? '<div class="event-dot"></div>' : ""
+        }</div><div class="events-container">`;
 
-  closeModal.onclick = closeModalFunction;
-  cancelBtn.onclick = closeModalFunction;
-  
-  // NEW: Close modal when clicking outside of it
-  window.onclick = function(event) {
-    if (event.target === formModal) {
-      closeModalFunction();
+      dayEvents
+        .sort((a, b) => a.startTime.localeCompare(b.startTime))
+        .forEach((e) => {
+          html += `<div class="event-bar" style="background-color:${
+            familyMembers[e.callerName] || "#888"
+          }" data-event-id="${e.id}">${formatTime12Hour(e.startTime)} ${
+            e.callerName
+          }</div>`;
+        });
+
+      html += "</div></div>";
+      calendarGrid.innerHTML += html;
     }
-  }
 
-  // NEW: Handle recurring checkbox to show/hide day options
-  recurCheckbox.addEventListener('change', function() {
-    if (this.checked) {
-      dowOptions.style.display = 'block';
-      // Auto-select the day of the week that matches the selected date
-      const selectedDate = new Date(form.date.value + 'T' + form.startTime.value);
-      const dayOfWeek = selectedDate.getDay();
-      const checkbox = form.querySelector(`input[name="dow"][value="${dayOfWeek}"]`);
-      if (checkbox) {
-        checkbox.checked = true;
-      }
-    } else {
-      dowOptions.style.display = 'none';
-      // Uncheck all day checkboxes
-      form.querySelectorAll('input[name="dow"]').forEach(cb => cb.checked = false);
+    for (let j = 1; j <= nextDays; j++) {
+      calendarGrid.innerHTML += `<div class="calendar-day other-month"><div class="date-number">${j}</div></div>`;
     }
-  });
+  };
 
-  // 9) UPDATED: Enhanced form submission with better error handling and user feedback
-  form.addEventListener('submit', async e => {
-    e.preventDefault();
+  const renderDailyEvents = (dateStr) => {
+    const date = new Date(dateStr + "T00:00:00");
+    dailyEventsTitle.textContent = `Calls for ${date.toLocaleDateString(
+      "default",
+      { weekday: "long", month: "long", day: "numeric" }
+    )}`;
+    dailyEventsList.innerHTML = "";
 
-    // Validate that a name was selected
-    if (!form.callerName.value) {
-      alert('Please select your name from the dropdown.');
-      form.callerName.focus();
+    const items = events
+      .filter((e) => e.date === dateStr)
+      .sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+    if (!items.length) {
+      dailyEventsList.innerHTML = "<li>No calls scheduled.</li>";
       return;
     }
 
-    // NEW: Show loading state
-    const saveBtn = form.querySelector('.save-btn');
-    const originalText = saveBtn.textContent;
-    saveBtn.textContent = 'Saving...';
-    saveBtn.disabled = true;
+    for (const e of items) {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <div class="event-details-text">${formatTime12Hour(
+          e.startTime
+        )} <span style="background-color:${
+        familyMembers[e.callerName] || "#888"
+      }">${e.callerName}</span></div>
+        <span class="delete-icon" data-event-id="${e.id}">🗑️</span>
+      `;
+      dailyEventsList.appendChild(li);
+    }
+  };
+
+  const openModal = (dateStr) => {
+    const formatted = new Date(dateStr).toLocaleDateString("default", {
+      month: "long",
+      day: "numeric",
+      year: "numeric"
+    });
+    modalTitle.textContent = `Schedule for ${formatted}`;
+    modalForm.reset();
+    modal.classList.remove("hidden");
+    document.getElementById("selected-date").value = dateStr;
+  };
+
+  const saveEvent = async (e) => {
+    e.preventDefault();
+    showLoader();
+    const formData = new FormData(modalForm);
+    const baseDate = new Date(formData.get("selected-date") + "T00:00:00");
+    const repeat = formData.get("recurring") === "on";
+    const numWeeks = repeat ? 8 : 1;
 
     try {
-      // Base event payload
-      const ev = {
-        date:       form.date.value,
-        startTime:  form.startTime.value,
-        endTime:    form.endTime.value,
-        callerName: form.callerName.value
-      };
+      for (let i = 0; i < numWeeks; i++) {
+        const eventDate = new Date(baseDate);
+        eventDate.setDate(baseDate.getDate() + i * 7);
 
-      // UPDATED: Enhanced helper function with better error handling
-      async function postAndRender(eventData) {
-        try {
-          const response = await fetch(SHEET_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ sheet1: eventData })
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        const payload = {
+          sheet1: {
+            date: eventDate.toISOString().split("T")[0],
+            callerName: formData.get("callerName"),
+            startTime: formData.get("startTime")
           }
+        };
 
-          // Add event to calendar display
-          calendar.addEvent({
-            title: eventData.callerName,
-            start: `${eventData.date}T${eventData.startTime}`,
-            end:   `${eventData.date}T${eventData.endTime}`,
-            color: personColor[eventData.callerName] || '#6c757d',
-            textColor: 'white',
-            borderColor: personColor[eventData.callerName] || '#6c757d',
-            display: 'block'
-          });
-        } catch (error) {
-          console.error('Error saving event:', error);
-          throw error;  // Re-throw to be caught by the main try-catch
+        const res = await fetch(SHEETY_API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.message || "Sheety error");
         }
       }
 
-      // Handle weekly recurrence
-      if (form.recur.checked) {
-        const checkedDays = Array.from(form.querySelectorAll('input[name="dow"]:checked'));
-        
-        if (checkedDays.length === 0) {
-          alert('Please select at least one day of the week for recurring calls.');
-          saveBtn.textContent = originalText;
-          saveBtn.disabled = false;
-          return;
-        }
-
-        const days = checkedDays.map(cb => parseInt(cb.value, 10));
-        const startDate = new Date(`${ev.date}T${ev.startTime}`);
-
-        // Generate 4 weeks of bookings
-        for (let w = 0; w < 4; w++) {
-          for (const dow of days) {
-            const dt = new Date(startDate);
-            dt.setDate(dt.getDate() + ((dow + 7 - dt.getDay()) % 7) + 7*w);
-            const iso = dt.toISOString().slice(0,10);
-            
-            await postAndRender({ ...ev, date: iso });
-          }
-        }
-        
-        const totalCalls = days.length * 4;
-        const plural = totalCalls > 1 ? 's' : '';
-        alert(`Successfully scheduled ${totalCalls} recurring call${plural} for ${ev.callerName}!`);
-      } else {
-        // Single booking
-        await postAndRender(ev);
-        alert(`Successfully scheduled call for ${ev.callerName}!`);
-      }
-
-      // Close modal on success
-      formModal.style.display = 'none';
-
-    } catch (error) {
-      console.error('Error saving events:', error);
-      alert('Sorry, there was an error saving your call time. Please try again.');
+      modal.classList.add("hidden");
+      showSuccessModal();
+    } catch (err) {
+      alert("Could not save the event: " + err.message);
     } finally {
-      // NEW: Reset button state
-      saveBtn.textContent = originalText;
-      saveBtn.disabled = false;
+      hideLoader();
     }
-  });
+  };
 
-  // NEW: Add keyboard navigation support
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && formModal.style.display === 'block') {
-      closeModalFunction();
-    }
-  });
+  const deleteEvent = async (id) => {
+    if (!confirm("Are you sure you want to delete this call?")) return;
 
-  // NEW: Prevent form submission on Enter key in select dropdown (common issue)
-  form.callerName.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
+    showLoader();
+    try {
+      const res = await fetch(`${SHEETY_API_URL}/${id}`, {
+        method: "DELETE"
+      });
+
+      if (!res.ok) throw new Error("Failed to delete.");
+
+      await fetchEvents();
+    } catch (err) {
+      alert("Delete failed. Try again.");
+    } finally {
+      hideLoader();
     }
-  });
+  };
+
+  const showSuccessModal = () => {
+    successModal.classList.remove("hidden");
+    successTimeout = setTimeout(() => {
+      hideSuccessModal();
+      fetchEvents();
+    }, 2500);
+  };
+
+  const hideSuccessModal = () => {
+    successModal.classList.add("hidden");
+    clearTimeout(successTimeout);
+  };
+
+  const generateIcsFile = () => {
+    const toUtcFormat = (date, time) => {
+      const [y, m, d] = date.split("-").map(Number);
+      const [h, min] = time.split(":").map(Number);
+      return (
+        new Date(Date.UTC(y, m - 1, d, h, min))
+          .toISOString()
+          .replace(/[-:.]/g, "")
+          .slice(0, -4) + "Z"
+      );
+    };
+
+    const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//GrandmaCall//EN"];
+
+    events.forEach((e) => {
+      const dtstart = toUtcFormat(e.date, e.startTime);
+      const endDate = new Date(`${e.date}T${e.startTime}`);
+      const dtend = toUtcFormat(
+        e.date,
+        new Date(endDate.getTime() + 30 * 60000).toISOString().slice(11, 16)
+      );
+
+      ics.push(
+        "BEGIN:VEVENT",
+        `UID:event-${e.id}@grandma-call`,
+        `DTSTAMP:${toUtcFormat(
+          new Date().toISOString().slice(0, 10),
+          "00:00"
+        )}`,
+        `DTSTART:${dtstart}`,
+        `DTEND:${dtend}`,
+        `SUMMARY:Call Grandma (${e.callerName})`,
+        "END:VEVENT"
+      );
+    });
+
+    ics.push("END:VCALENDAR");
+    const blob = new Blob([ics.join("\r\n")], { type: "text/calendar" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "grandma_calls.ics";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // --- INIT & EVENTS ---
+  (() => {
+    // Setup legend + dropdowns
+    legendList.innerHTML = Object.entries(familyMembers)
+      .map(
+        ([name, color]) =>
+          `<li><div class="color-box" style="background-color: ${color}"></div> ${name}</li>`
+      )
+      .join("");
+
+    callerNameSelect.innerHTML =
+      "<option disabled selected>Select your name</option>" +
+      Object.keys(familyMembers)
+        .map((name) => `<option value="${name}">${name}</option>`)
+        .join("");
+
+    for (let h = 7; h <= 21; h++) {
+      startTimeSelect.add(
+        new Option(
+          formatTime12Hour(`${h}:00`),
+          `${String(h).padStart(2, "0")}:00`
+        )
+      );
+    }
+
+    document.getElementById("prev-month-btn").addEventListener("click", () => {
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      renderCalendar();
+      renderDailyEvents(selectedDateStr);
+    });
+
+    document.getElementById("next-month-btn").addEventListener("click", () => {
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      renderCalendar();
+      renderDailyEvents(selectedDateStr);
+    });
+
+    document
+      .getElementById("refresh-calendar-btn")
+      .addEventListener("click", async () => {
+        showLoader();
+        await fetchEvents();
+        hideLoader();
+      });
+
+    document
+      .getElementById("add-call-for-day-btn")
+      .addEventListener("click", () => openModal(selectedDateStr));
+
+    modalForm.addEventListener("submit", saveEvent);
+
+    document
+      .getElementById("cancel-btn")
+      .addEventListener("click", () => modal.classList.add("hidden"));
+
+    document
+      .getElementById("sync-calendar-btn")
+      .addEventListener("click", generateIcsFile);
+
+    document
+      .getElementById("print-btn")
+      .addEventListener("click", () => window.print());
+
+    document.getElementById("success-modal").addEventListener("click", () => {
+      hideSuccessModal();
+      fetchEvents();
+    });
+
+    calendarGrid.addEventListener("click", (e) => {
+      const dayCell = e.target.closest(".calendar-day:not(.other-month)");
+      const eventBar = e.target.closest(".event-bar");
+
+      if (eventBar) {
+        deleteEvent(eventBar.dataset.eventId);
+        return;
+      }
+
+      if (dayCell && dayCell.dataset.date) {
+        const dateStr = dayCell.dataset.date;
+        if (dateStr === selectedDateStr) {
+          openModal(dateStr);
+        } else {
+          selectedDateStr = dateStr;
+          renderCalendar();
+          renderDailyEvents(selectedDateStr);
+        }
+      }
+    });
+
+    dailyEventsList.addEventListener("click", (e) => {
+      const icon = e.target.closest(".delete-icon");
+      if (icon?.dataset?.eventId) deleteEvent(icon.dataset.eventId);
+    });
+
+    fetchEvents();
+  })();
 });
