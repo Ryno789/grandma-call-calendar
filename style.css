@@ -1,76 +1,392 @@
-/* Basic layout */
+/* UPDATED: Enhanced basic layout with better typography for seniors */
 body {
-  font-family: sans-serif;
+  font-family: 'Arial', 'Helvetica', sans-serif; /* Better readability for seniors */
   margin: 0;
-  padding: 20px;
-  text-align: center;
+  padding: 10px;
+  background-color: #f8f9fa;
+  color: #333;
+  line-height: 1.6;
 }
 
-#calendar {
-  max-width: 800px;
+/* NEW: Container for better layout control */
+.container {
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 0 20px;
 }
 
-/* Modal styling */
+/* UPDATED: Enhanced title styling - larger and more prominent for seniors */
+h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+/* NEW: Instructions section to help users */
+.instructions {
+  background: #e3f2fd;
+  border: 2px solid #2196f3;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  text-align: left;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.instructions p {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.instructions ol {
+  font-size: 1rem;
+  padding-left: 20px;
+}
+
+.instructions li {
+  margin-bottom: 8px;
+}
+
+/* UPDATED: Enhanced calendar container */
+#calendar {
+  max-width: 100%;
+  margin: 0 auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* NEW: Better mobile responsiveness for calendar */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 10px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  .instructions {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  
+  #calendar {
+    font-size: 14px;
+  }
+  
+  /* Make calendar buttons larger for mobile touch */
+  .fc .fc-button {
+    padding: 8px 12px !important;
+    font-size: 14px !important;
+  }
+  
+  .fc .fc-toolbar-title {
+    font-size: 1.2rem !important;
+  }
+}
+
+/* UPDATED: Enhanced modal styling with better mobile support */
 .modal {
-  display: none; /* shown via JS */
+  display: none;
   position: fixed;
   z-index: 1000;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(3px);
 }
+
 .modal-content {
   background: #fff;
-  margin: 10% auto;
-  padding: 20px;
-  max-width: 400px;
-  border-radius: 4px;
+  margin: 5% auto;
+  padding: 30px;
+  max-width: 500px;
+  border-radius: 12px;
   position: relative;
   text-align: left;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  max-height: 90vh;
+  overflow-y: auto;
 }
+
+/* UPDATED: Better close button */
 .close {
   position: absolute;
-  right: 12px;
-  top: 6px;
-  font-size: 1.4em;
+  right: 15px;
+  top: 15px;
+  font-size: 2rem;
   cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
 }
 
-/* Recurrence controls spacing */
+.close:hover {
+  color: #333;
+}
+
+/* NEW: Form group styling for better organization */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #2c3e50;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  background-color: white;
+  transition: border-color 0.2s;
+}
+
+.form-group select:focus {
+  outline: none;
+  border-color: #2196f3;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+/* NEW: Time display styling */
+.time-display {
+  background: #f0f8ff;
+  border: 2px solid #2196f3;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.time-display p {
+  margin: 5px 0;
+  font-size: 1rem;
+}
+
+/* UPDATED: Enhanced recurrence controls */
 .recurrence {
-  margin: 12px 0;
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
 }
-#dowOptions label {
+
+/* NEW: Better checkbox styling */
+.checkbox-label {
+  display: flex !important;
+  align-items: center;
+  font-size: 1.1rem !important;
+  cursor: pointer;
+  margin-bottom: 0 !important;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin-right: 10px;
+  transform: scale(1.2);
+}
+
+/* NEW: Day buttons styling */
+.day-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 15px 0;
+}
+
+.day-button {
+  display: flex !important;
+  align-items: center;
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem !important;
+  margin: 0 !important;
+}
+
+.day-button:hover {
+  background: #f0f8ff;
+  border-color: #2196f3;
+}
+
+.day-button input[type="checkbox"] {
   margin-right: 6px;
-  font-size: 0.9em;
+  margin-left: 0;
 }
 
-/* Solid event bars and text */
+.day-button input[type="checkbox"]:checked + span {
+  font-weight: bold;
+  color: #2196f3;
+}
+
+.note {
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+/* UPDATED: Enhanced button styling */
+.save-btn, .cancel-btn {
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-right: 10px;
+  margin-top: 20px;
+  transition: all 0.2s;
+  font-weight: bold;
+}
+
+.save-btn {
+  background: #28a745;
+  color: white;
+  box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+}
+
+.save-btn:hover {
+  background: #218838;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+}
+
+.cancel-btn {
+  background: #6c757d;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background: #5a6268;
+}
+
+/* UPDATED: Enhanced solid event bars - more prominent and colorful */
 .fc .fc-daygrid-event {
-  display: block !important; /* force block on month view */
-  padding: 4px;
-  font-size: 0.9em;
-  white-space: normal;
+  display: block !important;
+  padding: 6px 8px !important;
+  font-size: 0.95rem !important;
+  white-space: normal !important;
+  border-radius: 6px !important;
+  border: none !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+  font-weight: bold !important;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.2) !important;
+  min-height: 25px !important;
 }
 
-/* Printer-friendly: show only calendar */
+/* NEW: Better event hover effects */
+.fc .fc-daygrid-event:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+  cursor: pointer !important;
+}
+
+/* NEW: Better calendar cell padding for senior-friendly clicking */
+.fc .fc-daygrid-day {
+  min-height: 80px !important;
+}
+
+.fc .fc-daygrid-day-number {
+  font-size: 1.1rem !important;
+  font-weight: bold !important;
+  padding: 8px !important;
+}
+
+/* NEW: Enhanced mobile modal responsiveness */
+@media (max-width: 600px) {
+  .modal-content {
+    margin: 2% 5%;
+    padding: 20px;
+    max-width: none;
+    width: auto;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+  }
+  
+  .instructions {
+    padding: 15px;
+  }
+  
+  .day-buttons {
+    justify-content: center;
+  }
+  
+  .day-button {
+    flex: 1;
+    min-width: 45px;
+    justify-content: center;
+  }
+  
+  .save-btn, .cancel-btn {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+  
+  /* Make calendar more touch-friendly on mobile */
+  .fc .fc-daygrid-day {
+    min-height: 60px !important;
+  }
+  
+  .fc .fc-daygrid-event {
+    font-size: 0.85rem !important;
+    padding: 4px 6px !important;
+  }
+}
+
+/* UPDATED: Enhanced printer-friendly styles */
 @media print {
   body * {
     visibility: hidden;
   }
+  
   #calendar, #calendar * {
     visibility: visible;
   }
+  
+  .container {
+    padding: 0;
+  }
+  
   #calendar {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
+    box-shadow: none;
   }
+  
   .fc .fc-daygrid-event {
     page-break-inside: avoid;
+    background: #ddd !important;
+    color: #000 !important;
+    font-weight: bold !important;
+  }
+  
+  .instructions {
+    display: none;
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
   }
 }
