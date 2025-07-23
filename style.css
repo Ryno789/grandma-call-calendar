@@ -1,392 +1,644 @@
-/* UPDATED: Enhanced basic layout with better typography for seniors */
-body {
-  font-family: 'Arial', 'Helvetica', sans-serif; /* Better readability for seniors */
-  margin: 0;
-  padding: 10px;
-  background-color: #f8f9fa;
-  color: #333;
-  line-height: 1.6;
+/* ENHANCED: Senior-friendly typography with better readability */
+:root {
+  --primary-color: #2c3e50;
+  --accent-color: #3498db;
+  --success-color: #27ae60;
+  --danger-color: #e74c3c;
+  --warning-color: #f39c12;
+  --light-bg: #f8f9fa;
+  --white: #ffffff;
+  --border-color: #dee2e6;
+  --text-dark: #2c3e50;
+  --text-muted: #6c757d;
+  
+  /* Person colors - matching your app.js */
+  --ryan-color: #007bff;
+  --mom-color: #e83e8c;
+  --uncle-joe-color: #28a745;
+  --sarah-color: #fd7e14;
+  --dad-color: #6f42c1;
+  --aunt-mary-color: #20c997;
 }
 
-/* NEW: Container for better layout control */
+body {
+  font-family: 'Open Sans', 'Arial', 'Helvetica', sans-serif;
+  margin: 0;
+  padding: 15px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  color: var(--text-dark);
+  line-height: 1.7;
+  font-size: 16px; /* Base font size for better senior readability */
+}
+
+/* ENHANCED: Better container with max width and centering */
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
-/* UPDATED: Enhanced title styling - larger and more prominent for seniors */
+/* ENHANCED: More prominent title with better visual hierarchy */
 h1 {
-  font-size: 2.5rem;
-  color: #2c3e50;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--primary-color);
   text-align: center;
-  margin-bottom: 20px;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  letter-spacing: -1px;
 }
 
-/* NEW: Instructions section to help users */
+/* ENHANCED: Better instructions section with step-by-step design */
 .instructions {
-  background: #e3f2fd;
-  border: 2px solid #2196f3;
-  border-radius: 8px;
-  padding: 20px;
+  background: var(--white);
+  border: 3px solid var(--accent-color);
+  border-radius: 15px;
+  padding: 30px;
   margin-bottom: 30px;
-  text-align: left;
-  max-width: 600px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 30px;
 }
 
-.instructions p {
+.instructions h2 {
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  margin-bottom: 25px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.instruction-steps {
+  margin-bottom: 30px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: var(--light-bg);
+  border-radius: 10px;
+  border-left: 5px solid var(--accent-color);
+}
+
+.step-number {
+  background: var(--accent-color);
+  color: white;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
   font-size: 1.1rem;
-  margin-bottom: 10px;
+  margin-right: 15px;
+  flex-shrink: 0;
 }
 
-.instructions ol {
+.step p {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+/* NEW: Color legend for family members */
+.color-legend {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 2px solid var(--border-color);
+}
+
+.color-legend h3 {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+.legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  background: var(--white);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  font-weight: 600;
+}
+
+.color-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  margin-right: 8px;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.color-box.ryan { background-color: var(--ryan-color); }
+.color-box.mom { background-color: var(--mom-color); }
+.color-box.uncle-joe { background-color: var(--uncle-joe-color); }
+.color-box.sarah { background-color: var(--sarah-color); }
+.color-box.dad { background-color: var(--dad-color); }
+.color-box.aunt-mary { background-color: var(--aunt-mary-color); }
+
+/* NEW: Quick actions section */
+.quick-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  background: var(--white);
+  border: 2px solid var(--accent-color);
+  color: var(--accent-color);
+  padding: 12px 20px;
+  border-radius: 8px;
   font-size: 1rem;
-  padding-left: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.instructions li {
-  margin-bottom: 8px;
+.action-btn:hover {
+  background: var(--accent-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
 }
 
-/* UPDATED: Enhanced calendar container */
+/* ENHANCED: Calendar wrapper with better styling */
+.calendar-wrapper {
+  background: var(--white);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
 #calendar {
   max-width: 100%;
   margin: 0 auto;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  font-size: 1rem;
 }
 
-/* NEW: Better mobile responsiveness for calendar */
+/* ENHANCED: Better mobile responsiveness */
 @media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+  
   .container {
     padding: 0 10px;
   }
   
   h1 {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
   
   .instructions {
-    padding: 15px;
+    padding: 20px;
     margin-bottom: 20px;
   }
   
-  #calendar {
-    font-size: 14px;
+  .step {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px 15px;
   }
   
-  /* Make calendar buttons larger for mobile touch */
-  .fc .fc-button {
-    padding: 8px 12px !important;
-    font-size: 14px !important;
-  }
-  
-  .fc .fc-toolbar-title {
-    font-size: 1.2rem !important;
-  }
-}
-
-/* UPDATED: Enhanced modal styling with better mobile support */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(3px);
-}
-
-.modal-content {
-  background: #fff;
-  margin: 5% auto;
-  padding: 30px;
-  max-width: 500px;
-  border-radius: 12px;
-  position: relative;
-  text-align: left;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-/* UPDATED: Better close button */
-.close {
-  position: absolute;
-  right: 15px;
-  top: 15px;
-  font-size: 2rem;
-  cursor: pointer;
-  color: #666;
-  transition: color 0.2s;
-}
-
-.close:hover {
-  color: #333;
-}
-
-/* NEW: Form group styling for better organization */
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin-bottom: 8px;
-  color: #2c3e50;
-}
-
-.form-group select {
-  width: 100%;
-  padding: 12px;
-  font-size: 1rem;
-  border: 2px solid #ddd;
-  border-radius: 6px;
-  background-color: white;
-  transition: border-color 0.2s;
-}
-
-.form-group select:focus {
-  outline: none;
-  border-color: #2196f3;
-  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
-}
-
-/* NEW: Time display styling */
-.time-display {
-  background: #f0f8ff;
-  border: 2px solid #2196f3;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.time-display p {
-  margin: 5px 0;
-  font-size: 1rem;
-}
-
-/* UPDATED: Enhanced recurrence controls */
-.recurrence {
-  margin: 20px 0;
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-}
-
-/* NEW: Better checkbox styling */
-.checkbox-label {
-  display: flex !important;
-  align-items: center;
-  font-size: 1.1rem !important;
-  cursor: pointer;
-  margin-bottom: 0 !important;
-}
-
-.checkbox-label input[type="checkbox"] {
-  margin-right: 10px;
-  transform: scale(1.2);
-}
-
-/* NEW: Day buttons styling */
-.day-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 15px 0;
-}
-
-.day-button {
-  display: flex !important;
-  align-items: center;
-  background: white;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.9rem !important;
-  margin: 0 !important;
-}
-
-.day-button:hover {
-  background: #f0f8ff;
-  border-color: #2196f3;
-}
-
-.day-button input[type="checkbox"] {
-  margin-right: 6px;
-  margin-left: 0;
-}
-
-.day-button input[type="checkbox"]:checked + span {
-  font-weight: bold;
-  color: #2196f3;
-}
-
-.note {
-  font-size: 0.9rem;
-  color: #666;
-  font-style: italic;
-  margin-top: 10px;
-}
-
-/* UPDATED: Enhanced button styling */
-.save-btn, .cancel-btn {
-  padding: 12px 24px;
-  font-size: 1.1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-right: 10px;
-  margin-top: 20px;
-  transition: all 0.2s;
-  font-weight: bold;
-}
-
-.save-btn {
-  background: #28a745;
-  color: white;
-  box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
-}
-
-.save-btn:hover {
-  background: #218838;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
-}
-
-.cancel-btn {
-  background: #6c757d;
-  color: white;
-}
-
-.cancel-btn:hover {
-  background: #5a6268;
-}
-
-/* UPDATED: Enhanced solid event bars - more prominent and colorful */
-.fc .fc-daygrid-event {
-  display: block !important;
-  padding: 6px 8px !important;
-  font-size: 0.95rem !important;
-  white-space: normal !important;
-  border-radius: 6px !important;
-  border: none !important;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-  font-weight: bold !important;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.2) !important;
-  min-height: 25px !important;
-}
-
-/* NEW: Better event hover effects */
-.fc .fc-daygrid-event:hover {
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
-  cursor: pointer !important;
-}
-
-/* NEW: Better calendar cell padding for senior-friendly clicking */
-.fc .fc-daygrid-day {
-  min-height: 80px !important;
-}
-
-.fc .fc-daygrid-day-number {
-  font-size: 1.1rem !important;
-  font-weight: bold !important;
-  padding: 8px !important;
-}
-
-/* NEW: Enhanced mobile modal responsiveness */
-@media (max-width: 600px) {
-  .modal-content {
-    margin: 2% 5%;
-    padding: 20px;
-    max-width: none;
-    width: auto;
-  }
-  
-  h1 {
-    font-size: 1.8rem;
-  }
-  
-  .instructions {
-    padding: 15px;
-  }
-  
-  .day-buttons {
-    justify-content: center;
-  }
-  
-  .day-button {
-    flex: 1;
-    min-width: 45px;
-    justify-content: center;
-  }
-  
-  .save-btn, .cancel-btn {
-    width: 100%;
+  .step-number {
     margin-right: 0;
     margin-bottom: 10px;
   }
   
-  /* Make calendar more touch-friendly on mobile */
-  .fc .fc-daygrid-day {
-    min-height: 60px !important;
+  .legend-items {
+    flex-direction: column;
+    align-items: center;
   }
   
-  .fc .fc-daygrid-event {
-    font-size: 0.85rem !important;
-    padding: 4px 6px !important;
+  .quick-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .action-btn {
+    width: 100%;
+    max-width: 250px;
+    justify-content: center;
+  }
+  
+  .calendar-wrapper {
+    padding: 15px;
+  }
+  
+  /* Better mobile calendar styling */
+  #calendar {
+    font-size: 14px;
+  }
+  
+  .fc .fc-button {
+    padding: 10px 15px !important;
+    font-size: 14px !important;
+    margin: 2px !important;
+  }
+  
+  .fc .fc-toolbar-title {
+    font-size: 1.3rem !important;
+    margin: 10px 0 !important;
+  }
+  
+  .fc .fc-toolbar {
+    flex-direction: column !important;
+    gap: 15px !important;
+  }
+  
+  .fc .fc-toolbar-chunk {
+    display: flex !important;
+    justify-content: center !important;
   }
 }
 
-/* UPDATED: Enhanced printer-friendly styles */
-@media print {
-  body * {
-    visibility: hidden;
+/* ENHANCED: Better modal styling */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(5px);
+  overflow-y: auto;
+}
+
+.modal-content {
+  background: var(--white);
+  margin: 3% auto;
+  padding: 40px;
+  max-width: 600px;
+  border-radius: 20px;
+  position: relative;
+  text-align: left;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border: 3px solid var(--accent-color);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.9);
   }
-  
-  #calendar, #calendar * {
-    visibility: visible;
-  }
-  
-  .container {
-    padding: 0;
-  }
-  
-  #calendar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    box-shadow: none;
-  }
-  
-  .fc .fc-daygrid-event {
-    page-break-inside: avoid;
-    background: #ddd !important;
-    color: #000 !important;
-    font-weight: bold !important;
-  }
-  
-  .instructions {
-    display: none;
-  }
-  
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
+
+.close, .help-close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  font-size: 2.5rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  padding: 5px;
+  line-height: 1;
+}
+
+.close:hover, .help-close:hover {
+  color: var(--danger-color);
+}
+
+/* ENHANCED: Better form styling */
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+.label-icon {
+  margin-right: 8px;
+  font-size: 1.3rem;
+}
+
+.label-text {
+  flex: 1;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 15px;
+  font-size: 1.1rem;
+  border: 3px solid var(--border-color);
+  border-radius: 10px;
+  background-color: var(--white);
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.form-group select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);
+  background-color: #f8f9fa;
+}
+
+.help-text {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ENHANCED: Better time display */
+.time-display {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border: 3px solid var(--accent-color);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.time-display h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.3rem;
+  color: var(--primary-color);
+}
+
+.time-text {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+/* ENHANCED: Better recurrence section */
+.recurrence-section {
+  background: var(--light-bg);
+  border-radius: 12px;
+  padding: 25px;
+  margin: 25px 0;
+  border: 2px solid var(--border-color);
+}
+
+.checkbox-label {
+  display: flex !important;
+  align-items: center;
+  font-size: 1.2rem !important;
+  cursor: pointer;
+  margin-bottom: 0 !important;
+  font-weight: 600 !important;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin-right: 12px;
+  transform: scale(1.4);
+  cursor: pointer;
+}
+
+.checkbox-text {
+  color: var(--primary-color);
+}
+
+/* ENHANCED: Better day selection */
+.dow-options {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid var(--border-color);
+}
+
+.dow-options h4 {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+.day-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.day-button {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  background: var(--white);
+  border: 3px solid var(--border-color);
+  border-radius: 12px;
+  padding: 15px 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 0.9rem !important;
+  margin: 0 !important;
+  text-align: center;
+  position: relative;
+}
+
+.day-button:hover {
+  background: #e3f2fd;
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+}
+
+.day-button input[type="checkbox"] {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  transform: scale(1.2);
+}
+
+.day-button input[type="checkbox"]:checked + .day-abbr,
+.day-button input[type="checkbox"]:checked ~ .day-full {
+  color: var(--accent-color);
+  font-weight: bold;
+}
+
+.day-button input[type="checkbox"]:checked {
+  accent-color: var(--accent-color);
+}
+
+.day-abbr {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.day-full {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.recurrence-info {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.info-text {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin: 0;
+  font-style: italic;
+}
+
+/* ENHANCED: Better button styling */
+.button-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.save-btn, .cancel-btn {
+  flex: 1;
+  min-width: 150px;
+  padding: 15px 25px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.save-btn {
+  background: linear-gradient(135deg, var(--success-color) 0%, #2ecc71 100%);
+  color: white;
+  border: 3px solid var(--success-color);
+  box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+  background: linear-gradient(135deg, #2ecc71 0%, var(--success-color) 100%);
+}
+
+.save-btn:disabled {
+  background: var(--text-muted);
+  border-color: var(--text-muted);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.cancel-btn {
+  background: var(--white);
+  color: var(--text-muted);
+  border: 3px solid var(--text-muted);
+}
+
+.cancel-btn:hover {
+  background: var(--text-muted);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* ENHANCED: More prominent calendar events */
+.fc .fc-daygrid-event {
+  display: block !important;
+  padding: 8px 12px !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  white-space: normal !important;
+  border-radius: 8px !important;
+  border: none !important;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15) !important;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3) !important;
+  min-height: 30px !important;
+  margin: 2px 1px !important;
+  transition: all 0.2s ease !important;
+}
+
+.fc .fc-daygrid-event:hover {
+  transform: translateY(-1px) scale(1.02) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.25) !important;
+  cursor: pointer !important;
+  z-index: 10 !important;
+}
+
+/* ENHANCED: Better calendar day cells */
+.fc .fc-daygrid-day {
+  min-height: 100px !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.fc .fc-daygrid-day:hover {
+  background-color: rgba(52, 152, 219, 0.05) !important;
+}
+
+.fc .fc-daygrid-day-number {
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
+  padding: 10px !important;
+  color: var(--primary-color) !important;
+}
+
+.fc .fc-col-header-cell {
+  background: var(--light-bg) !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  padding: 12px !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+/* NEW: Help modal content styling */
+.help-content {
+  line-height: 1.8;
+}
+
+.help-content h3 {
+  color: var(--primary-color);
+  font-size: 1.3rem;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: 5px;
+}
+
+.help-content h3:first-child {
+  margin-top: 0;
+}
+
+.help-content p {
+  margin-bottom: 15px;
+  font-size: 1.1rem;
