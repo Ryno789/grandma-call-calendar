@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
   // 1) Your Sheety API endpoint
-  const SHEET_API_URL = 'https://api.sheety.co/yourusername/yourproject/sheet1';
+  const SHEET_API_URL = 'https://api.sheety.co/bb40ccff6c18ebdc8dc88590a23aea62/grandmaPhoneCallCalendarDatabase/sheet1';
 
   // 2) UPDATED: Enhanced color mapping with more vibrant colors for better visibility
   const personColor = {
