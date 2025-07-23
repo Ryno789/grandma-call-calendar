@@ -2,56 +2,95 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <!-- UPDATED: Added viewport meta tag for better mobile responsiveness -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- ENHANCED: Better viewport and mobile optimization -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>📞 Grandma's Call Calendar</title>
   <!-- 1) FullCalendar global bundle (includes all core + plugins) -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>
   <!-- 2) Your custom styles (modal, print, event tweaks) -->
   <link rel="stylesheet" href="style.css">
+  <!-- NEW: Added Google Fonts for better senior-friendly typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- UPDATED: Added container div for better layout control -->
+  <!-- UPDATED: Enhanced container div for better layout control -->
   <div class="container">
-    <!-- UPDATED: Made title larger and more prominent for seniors -->
+    <!-- ENHANCED: Made title even larger and more prominent for seniors with better contrast -->
     <h1>📞 Grandma's Call Calendar</h1>
     
-    <!-- NEW: Added instructions section to help users understand how to use the calendar -->
+    <!-- ENHANCED: Improved instructions section with better visual hierarchy -->
     <div class="instructions">
-      <p><strong>How to schedule a call:</strong></p>
-      <ol>
-        <li>Click and drag on the calendar to select your preferred time slot</li>
-        <li>Choose your name from the dropdown</li>
-        <li>Optionally set up weekly recurring calls</li>
-        <li>Click "Save" to confirm your time slot</li>
-      </ol>
+      <h2>📋 How to Schedule Your Call</h2>
+      <div class="instruction-steps">
+        <div class="step">
+          <span class="step-number">1</span>
+          <p>Click and drag on the calendar to select your preferred time slot</p>
+        </div>
+        <div class="step">
+          <span class="step-number">2</span>
+          <p>Choose your name from the dropdown menu</p>
+        </div>
+        <div class="step">
+          <span class="step-number">3</span>
+          <p>Optionally set up weekly recurring calls for regular chats</p>
+        </div>
+        <div class="step">
+          <span class="step-number">4</span>
+          <p>Click "Save My Call Time" to confirm your appointment</p>
+        </div>
+      </div>
+      <!-- NEW: Added legend showing person colors -->
+      <div class="color-legend">
+        <h3>👥 Family Member Colors</h3>
+        <div class="legend-items">
+          <div class="legend-item"><span class="color-box ryan"></span>Ryan</div>
+          <div class="legend-item"><span class="color-box mom"></span>Mom</div>
+          <div class="legend-item"><span class="color-box uncle-joe"></span>Uncle Joe</div>
+          <div class="legend-item"><span class="color-box sarah"></span>Sarah</div>
+          <div class="legend-item"><span class="color-box dad"></span>Dad</div>
+          <div class="legend-item"><span class="color-box aunt-mary"></span>Aunt Mary</div>
+        </div>
+      </div>
     </div>
     
-    <!-- 3) Calendar Container -->
-    <div id="calendar"></div>
+    <!-- ENHANCED: Added quick actions section -->
+    <div class="quick-actions">
+      <button id="todayBtn" class="action-btn">📅 Go to Today</button>
+      <button id="printBtn" class="action-btn">🖨️ Print Calendar</button>
+      <button id="helpBtn" class="action-btn">❓ Help</button>
+    </div>
     
-    <!-- 4) Modal Form: hidden by default; opens on calendar.select -->
-    <div id="formModal" class="modal">
+    <!-- 3) Calendar Container with enhanced wrapper -->
+    <div class="calendar-wrapper">
+      <div id="calendar"></div>
+    </div>
+    
+    <!-- 4) ENHANCED Modal Form with better accessibility and senior-friendly design -->
+    <div id="formModal" class="modal" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
       <div class="modal-content">
-        <span id="closeModal" class="close">&times;</span>
-        <!-- UPDATED: Made heading more descriptive -->
-        <h2>Schedule Your Call with Grandma</h2>
+        <span id="closeModal" class="close" aria-label="Close modal">&times;</span>
+        <!-- ENHANCED: More descriptive heading with icon -->
+        <h2 id="modal-title">📞 Schedule Your Call with Grandma</h2>
+        
         <form id="scheduleForm">
           <!-- 5) Hidden inputs for the selected date/time -->
           <input type="hidden" name="date" />
           <input type="hidden" name="startTime" />
           <input type="hidden" name="endTime" />
           
-          <!-- NEW: Display selected time slot for confirmation -->
+          <!-- ENHANCED: Better time display with more prominent styling -->
           <div class="time-display">
-            <p><strong>Selected Time:</strong></p>
-            <p id="selectedTimeDisplay">Please select a time slot on the calendar</p>
+            <h3>🕐 Selected Time Slot</h3>
+            <p id="selectedTimeDisplay" class="time-text">Please select a time slot on the calendar</p>
           </div>
           
-          <!-- 6) UPDATED: Enhanced dropdown with better styling and more family members -->
+          <!-- 6) ENHANCED: Better dropdown with clearer labeling and validation -->
           <div class="form-group">
-            <label for="callerName">Your Name:</label>
-            <select name="callerName" id="callerName" required>
+            <label for="callerName">
+              <span class="label-icon">👤</span>
+              <span class="label-text">Who will be calling?</span>
+            </label>
+            <select name="callerName" id="callerName" required aria-describedby="name-help">
               <option value="">– Choose Your Name –</option>
               <option value="Ryan">Ryan</option>
               <option value="Mom">Mom</option>
@@ -59,41 +98,100 @@
               <option value="Sarah">Sarah</option>
               <option value="Dad">Dad</option>
               <option value="Aunt Mary">Aunt Mary</option>
-              <!-- add more family members here as needed -->
+              <!-- NEW: Easy to add more family members here -->
             </select>
+            <small id="name-help" class="help-text">Select your name from the list above</small>
           </div>
           
-          <!-- 7) UPDATED: Enhanced weekly recurrence controls with better layout -->
-          <div class="recurrence">
+          <!-- 7) ENHANCED: Better recurrence controls with clearer design -->
+          <div class="recurrence-section">
             <div class="form-group">
               <label class="checkbox-label">
-                <input type="checkbox" name="recur" id="recur" /> 
+                <input type="checkbox" name="recur" id="recur" aria-describedby="recur-help" /> 
                 <span class="checkmark"></span>
-                Repeat this call weekly?
+                <span class="checkbox-text">🔄 Make this a weekly recurring call</span>
               </label>
+              <small id="recur-help" class="help-text">Check this to automatically book the same time every week</small>
             </div>
             
-            <!-- NEW: Days of week selection appears when recur is checked -->
-            <div id="dowOptions" style="display: none;">
-              <p><strong>Select days to repeat:</strong></p>
+            <!-- ENHANCED: Better days of week selection -->
+            <div id="dowOptions" class="dow-options" style="display: none;">
+              <h4>📅 Which days should this repeat?</h4>
               <div class="day-buttons">
-                <label class="day-button"><input type="checkbox" name="dow" value="1" /><span>Mon</span></label>
-                <label class="day-button"><input type="checkbox" name="dow" value="2" /><span>Tue</span></label>
-                <label class="day-button"><input type="checkbox" name="dow" value="3" /><span>Wed</span></label>
-                <label class="day-button"><input type="checkbox" name="dow" value="4" /><span>Thu</span></label>
-                <label class="day-button"><input type="checkbox" name="dow" value="5" /><span>Fri</span></label>
-                <label class="day-button"><input type="checkbox" name="dow" value="6" /><span>Sat</span></label>
-                <label class="day-button"><input type="checkbox" name="dow" value="0" /><span>Sun</span></label>
+                <label class="day-button">
+                  <input type="checkbox" name="dow" value="1" />
+                  <span class="day-abbr">Mon</span>
+                  <span class="day-full">Monday</span>
+                </label>
+                <label class="day-button">
+                  <input type="checkbox" name="dow" value="2" />
+                  <span class="day-abbr">Tue</span>
+                  <span class="day-full">Tuesday</span>
+                </label>
+                <label class="day-button">
+                  <input type="checkbox" name="dow" value="3" />
+                  <span class="day-abbr">Wed</span>
+                  <span class="day-full">Wednesday</span>
+                </label>
+                <label class="day-button">
+                  <input type="checkbox" name="dow" value="4" />
+                  <span class="day-abbr">Thu</span>
+                  <span class="day-full">Thursday</span>
+                </label>
+                <label class="day-button">
+                  <input type="checkbox" name="dow" value="5" />
+                  <span class="day-abbr">Fri</span>
+                  <span class="day-full">Friday</span>
+                </label>
+                <label class="day-button">
+                  <input type="checkbox" name="dow" value="6" />
+                  <span class="day-abbr">Sat</span>
+                  <span class="day-full">Saturday</span>
+                </label>
+                <label class="day-button">
+                  <input type="checkbox" name="dow" value="0" />
+                  <span class="day-abbr">Sun</span>
+                  <span class="day-full">Sunday</span>
+                </label>
               </div>
-              <!-- NEW: Note about recurring bookings -->
-              <p class="note">This will create 4 weeks of recurring calls</p>
+              <!-- ENHANCED: Better explanation of recurring feature -->
+              <div class="recurrence-info">
+                <p class="info-text">ℹ️ This will create 4 weeks of recurring calls starting from your selected date</p>
+              </div>
             </div>
           </div>
           
-          <!-- UPDATED: Enhanced save button -->
-          <button type="submit" class="save-btn">💾 Save My Call Time</button>
-          <button type="button" class="cancel-btn" id="cancelBtn">Cancel</button>
+          <!-- ENHANCED: Better button styling and layout -->
+          <div class="button-group">
+            <button type="submit" class="save-btn">💾 Save My Call Time</button>
+            <button type="button" class="cancel-btn" id="cancelBtn">❌ Cancel</button>
+          </div>
         </form>
+      </div>
+    </div>
+    
+    <!-- NEW: Help modal for additional guidance -->
+    <div id="helpModal" class="modal" role="dialog" aria-labelledby="help-title" aria-hidden="true">
+      <div class="modal-content">
+        <span class="close help-close" aria-label="Close help">&times;</span>
+        <h2 id="help-title">❓ Calendar Help Guide</h2>
+        <div class="help-content">
+          <h3>🎯 Getting Started</h3>
+          <p>This calendar helps our family coordinate calls with Grandma. Each person gets their own color so we can easily see who's calling when.</p>
+          
+          <h3>📱 On Mobile Devices</h3>
+          <p>• Tap and hold to select a time slot<br>
+          • Use the "Month" and "List" buttons to switch views<br>
+          • The List view works best on smaller screens</p>
+          
+          <h3>🖥️ On Computers</h3>
+          <p>• Click and drag to select your preferred time<br>
+          • You can see the whole month at once<br>
+          • Hover over appointments to see details</p>
+          
+          <h3>🔄 Recurring Calls</h3>
+          <p>Use the recurring option to automatically book the same time slot every week for a month. Perfect for regular weekly chats!</p>
+        </div>
       </div>
     </div>
   </div>
