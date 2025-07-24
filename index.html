@@ -54,7 +54,7 @@
       </div>
       <div id="actions-section">
         <button id="print-btn">🖨️ Print Month View</button>
-        <button id="sync-calendar-btn">🔄 Sync with Phone Calendar</button>
+        <button class="hidden" id="sync-calendar-btn">🔄 Sync with Phone Calendar</button>
       </div>
     </section>
   </div>
@@ -71,10 +71,10 @@
         <label for="startTime">Call Time:</label>
         <select id="startTime" name="startTime" required></select>
 
-        <div class="recurring-option">
+        <!--<div class="recurring-option">
           <input type="checkbox" id="recurring" name="recurring">
           <label for="recurring">Repeat weekly for 2 months</label>
-        </div>
+        </div>-->
 
         <div class="modal-buttons">
           <button type="submit">Save Call</button>
