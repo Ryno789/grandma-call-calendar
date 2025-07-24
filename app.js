@@ -4,12 +4,19 @@ document.addEventListener("DOMContentLoaded", () => {
     "https://api.sheety.co/bb40ccff6c18ebdc8dc88590a23aea62/grandmaPhoneCallCalendarDatabase/sheet1";
 
   const familyMembers = {
-    Ryan: "#4A90E2",
-    Francine: "#F5A623",
-    Peter: "#50E3C2",
-    Alice: "#BD10E0",
-    James: "#B8E986",
-    Sophia: "#E01053"
+    Alex: "#FF6F61",
+    Austin: "#4C9F70",
+    Cate: "#FFD966",
+    Charlotte: "#B565A7",
+    Ellen: "#6EC4DB",
+    Francine: "#7BC8A4",
+    Jeff: "#6A5ACD",
+    Koko: "#FFB347",
+    Larry: "#00BFB2",
+    Peter: "#E97451",
+    Ryan: "#A1C349",
+    Tim: "#8B5E3C",
+    Zoe: "#DC143C"
   };
 
   // --- DOM ELEMENTS ---
