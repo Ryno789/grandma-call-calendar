@@ -312,13 +312,21 @@ document.addEventListener("DOMContentLoaded", () => {
         .map((name) => `<option value="${name}">${name}</option>`)
         .join("");
 
-    for (let h = 7; h <= 21; h++) {
-      startTimeSelect.add(
-        new Option(
-          formatTime12Hour(`${h}:00`),
-          `${String(h).padStart(2, "0")}:00`
-        )
-      );
+    const startTime = new Date();
+    startTime.setHours(10, 30, 0, 0); // 10:30 AM
+
+    const endTime = new Date();
+    endTime.setHours(20, 30, 0, 0); // 8:30 PM
+
+    while (startTime <= endTime) {
+      const hours = String(startTime.getHours()).padStart(2, "0");
+      const minutes = String(startTime.getMinutes()).padStart(2, "0");
+      const timeValue = `${hours}:${minutes}`;
+
+      startTimeSelect.add(new Option(formatTime12Hour(timeValue), timeValue));
+
+      // Add 30 minutes
+      startTime.setMinutes(startTime.getMinutes() + 30);
     }
 
     document.getElementById("prev-month-btn").addEventListener("click", () => {
