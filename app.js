@@ -198,8 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
              }"></div>`
            : ""
        }
-
-</div><div class="events-container">`;
+       </div><div class="events-container">`;
 
       dayEvents
         .sort((a, b) => a.startTime.localeCompare(b.startTime))
@@ -252,11 +251,15 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const openModal = (dateStr) => {
-    const formatted = new Date(dateStr).toLocaleDateString("default", {
-      month: "long",
-      day: "numeric",
-      year: "numeric"
-    });
+    const [year, month, day] = dateStr.split("-").map(Number);
+    const formatted = new Date(year, month - 1, day).toLocaleDateString(
+      "default",
+      {
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+      }
+    );
     modalTitle.textContent = `Schedule for ${formatted}`;
     modalForm.reset();
     modal.classList.remove("hidden");
