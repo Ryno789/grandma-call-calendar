@@ -1,11 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
   // --- CONFIGURATION ---
   // Replace these with your Supabase project credentials
-  const SUPABASE_URL = 'https://okcewpxneonowzducvjt.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9rY2V3cHhuZW9ub3d6ZHVjdmp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0MDIwOTYsImV4cCI6MjA2ODk3ODA5Nn0.O9XNkrcu-45VJVkSGqMXQqMtG4Z1-rlyoWbeUZtWlI0';
-  
+  const SUPABASE_URL = "https://okcewpxneonowzducvjt.supabase.co";
+  const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9rY2V3cHhuZW9ub3d6ZHVjdmp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0MDIwOTYsImV4cCI6MjA2ODk3ODA5Nn0.O9XNkrcu-45VJVkSGqMXQqMtG4Z1-rlyoWbeUZtWlI0";
   // Supabase client setup
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
   const familyMembers = {
     Alex: "#FF6F61",
@@ -61,15 +64,15 @@ document.addEventListener("DOMContentLoaded", () => {
     showLoader();
     try {
       const { data, error } = await supabase
-        .from('phone_calls')
-        .select('*')
-        .order('date', { ascending: true })
-        .order('start_time', { ascending: true });
+        .from("phone_calls")
+        .select("*")
+        .order("date", { ascending: true })
+        .order("start_time", { ascending: true });
 
       if (error) throw error;
 
       // Transform data to match existing format
-      events = data.map(row => ({
+      events = data.map((row) => ({
         id: row.id,
         date: row.date,
         callerName: row.caller_name,
@@ -80,7 +83,9 @@ document.addEventListener("DOMContentLoaded", () => {
       renderDailyEvents(selectedDateStr);
     } catch (err) {
       console.error("Error fetching events:", err);
-      alert("Could not load events. Please check your connection or database settings.");
+      alert(
+        "Could not load events. Please check your connection or database settings."
+      );
     } finally {
       hideLoader();
     }
@@ -96,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const eventsToInsert = [];
-      
+
       for (let i = 0; i < numWeeks; i++) {
         const eventDate = new Date(baseDate);
         eventDate.setDate(baseDate.getDate() + i * 7);
@@ -109,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const { error } = await supabase
-        .from('phone_calls')
+        .from("phone_calls")
         .insert(eventsToInsert);
 
       if (error) throw error;
@@ -130,9 +135,9 @@ document.addEventListener("DOMContentLoaded", () => {
     showLoader();
     try {
       const { error } = await supabase
-        .from('phone_calls')
+        .from("phone_calls")
         .delete()
-        .eq('id', id);
+        .eq("id", id);
 
       if (error) throw error;
 
@@ -186,9 +191,15 @@ document.addEventListener("DOMContentLoaded", () => {
         isSelected ? "selected" : ""
       }" data-date="${dateStr}">
         <div class="date-number ${isToday ? "today" : ""}">${i}
-        ${
-          dayEvents.length ? '<div class="event-dot"></div>' : ""
-        }</div><div class="events-container">`;
+       ${
+         dayEvents.length
+           ? `<div class="event-dot" style="background-color:${
+               familyMembers[dayEvents[0].callerName] || "#888"
+             }"></div>`
+           : ""
+       }
+
+</div><div class="events-container">`;
 
       dayEvents
         .sort((a, b) => a.startTime.localeCompare(b.startTime))
@@ -311,6 +322,77 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.removeChild(link);
   };
 
+  async function generateWebcalUrl() {
+    const functionUrl = `${SUPABASE_URL}/functions/v1/calendar-feed`;
+
+    // call with Authorization header:
+    let resp;
+    try {
+      resp = await fetch(functionUrl, {
+        headers: {
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+        }
+      });
+      if (!resp.ok) {
+        throw new Error(`HTTP ${resp.status}`);
+      }
+    } catch (err) {
+      alert("Calendar feed not ready. Try again shortly.");
+      console.error(err);
+      return;
+    }
+
+    // convert to webcal://
+    const webcalUrl = functionUrl.replace(/^https:\/\//, "webcal://");
+
+    const instructions = `
+📱 LIVE CALENDAR SYNC INSTRUCTIONS
+
+Your calendar will automatically update when anyone adds/removes calls!
+
+🍎 iPhone/iPad:
+1. Copy this link: ${webcalUrl}
+2. Open Safari and paste the link
+3. Tap "Subscribe" when prompted
+4. Choose which calendar to add it to
+
+🤖 Android:
+1. Install "ICSx⁵" from Google Play Store (free)
+2. Open ICSx⁵ and tap the "+" button
+3. Paste: ${webcalUrl}
+4. Set sync frequency to "Every hour" for faster updates
+
+💻 Google Calendar:
+1. Go to calendar.google.com
+2. Click "+" next to "Other calendars"
+3. Select "From URL"
+4. Paste: ${webcalUrl}
+
+🖥️ Outlook:
+1. Open Outlook Calendar
+2. Go to Add Calendar > From Internet
+3. Paste: ${webcalUrl}
+
+The calendar will check for updates automatically!
+  `;
+
+    alert(instructions);
+
+    try {
+      await navigator.clipboard.writeText(webcalUrl);
+      alert("📋 Webcal URL copied to clipboard!");
+    } catch {
+      // fallback
+      const ta = document.createElement("textarea");
+      ta.value = webcalUrl;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      alert("📋 Webcal URL copied to clipboard!");
+    }
+  }
+
   // --- INIT & EVENTS ---
   (() => {
     // Setup legend + dropdowns
@@ -376,7 +458,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document
       .getElementById("sync-calendar-btn")
-      .addEventListener("click", generateIcsFile);
+      .addEventListener("click", generateWebcalUrl);
 
     document
       .getElementById("print-btn")
