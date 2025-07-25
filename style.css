@@ -98,10 +98,6 @@ button:hover {
 .calendar-day {
   padding: 0.2rem;
   cursor: pointer;
-  position: relative;
-  text-align: center;
-  vertical-align: top;
-  padding: 4px;
 }
 
 .date-number {
