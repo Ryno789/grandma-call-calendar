@@ -1,7 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
   // --- CONFIGURATION ---
-  const SHEETY_API_URL =
-    "https://api.sheety.co/bb40ccff6c18ebdc8dc88590a23aea62/grandmaPhoneCallCalendarDatabase/sheet1";
+  // Replace these with your Supabase project credentials
+  const SUPABASE_URL = 'https://okcewpxneonowzducvjt.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9rY2V3cHhuZW9ub3d6ZHVjdmp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0MDIwOTYsImV4cCI6MjA2ODk3ODA5Nn0.O9XNkrcu-45VJVkSGqMXQqMtG4Z1-rlyoWbeUZtWlI0';
+  
+  // Supabase client setup
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const familyMembers = {
     Alex: "#FF6F61",
@@ -52,24 +56,96 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${hour12}:${m} ${ampm}`;
   };
 
+  // --- SUPABASE DATABASE FUNCTIONS ---
   const fetchEvents = async () => {
     showLoader();
     try {
-      const response = await fetch(SHEETY_API_URL);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data = await response.json();
-      events = data.sheet1 || [];
+      const { data, error } = await supabase
+        .from('phone_calls')
+        .select('*')
+        .order('date', { ascending: true })
+        .order('start_time', { ascending: true });
+
+      if (error) throw error;
+
+      // Transform data to match existing format
+      events = data.map(row => ({
+        id: row.id,
+        date: row.date,
+        callerName: row.caller_name,
+        startTime: row.start_time
+      }));
 
       renderCalendar();
       renderDailyEvents(selectedDateStr);
     } catch (err) {
       console.error("Error fetching events:", err);
-      alert("Could not load events. Please check your connection or API.");
+      alert("Could not load events. Please check your connection or database settings.");
     } finally {
       hideLoader();
     }
   };
 
+  const saveEvent = async (e) => {
+    e.preventDefault();
+    showLoader();
+    const formData = new FormData(modalForm);
+    const baseDate = new Date(formData.get("selected-date") + "T00:00:00");
+    const repeat = formData.get("recurring") === "on";
+    const numWeeks = repeat ? 8 : 1;
+
+    try {
+      const eventsToInsert = [];
+      
+      for (let i = 0; i < numWeeks; i++) {
+        const eventDate = new Date(baseDate);
+        eventDate.setDate(baseDate.getDate() + i * 7);
+
+        eventsToInsert.push({
+          date: eventDate.toISOString().split("T")[0],
+          caller_name: formData.get("callerName"),
+          start_time: formData.get("startTime")
+        });
+      }
+
+      const { error } = await supabase
+        .from('phone_calls')
+        .insert(eventsToInsert);
+
+      if (error) throw error;
+
+      modal.classList.add("hidden");
+      showSuccessModal();
+    } catch (err) {
+      console.error("Error saving event:", err);
+      alert("Could not save the event: " + err.message);
+    } finally {
+      hideLoader();
+    }
+  };
+
+  const deleteEvent = async (id) => {
+    if (!confirm("Are you sure you want to delete this call?")) return;
+
+    showLoader();
+    try {
+      const { error } = await supabase
+        .from('phone_calls')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      await fetchEvents();
+    } catch (err) {
+      console.error("Error deleting event:", err);
+      alert("Delete failed. Try again.");
+    } finally {
+      hideLoader();
+    }
+  };
+
+  // --- EXISTING UI FUNCTIONS (unchanged) ---
   const renderCalendar = () => {
     // Don't mutate global currentDate!
     const baseDate = new Date(currentDate);
@@ -174,67 +250,6 @@ document.addEventListener("DOMContentLoaded", () => {
     modalForm.reset();
     modal.classList.remove("hidden");
     document.getElementById("selected-date").value = dateStr;
-  };
-
-  const saveEvent = async (e) => {
-    e.preventDefault();
-    showLoader();
-    const formData = new FormData(modalForm);
-    const baseDate = new Date(formData.get("selected-date") + "T00:00:00");
-    const repeat = formData.get("recurring") === "on";
-    const numWeeks = repeat ? 8 : 1;
-
-    try {
-      for (let i = 0; i < numWeeks; i++) {
-        const eventDate = new Date(baseDate);
-        eventDate.setDate(baseDate.getDate() + i * 7);
-
-        const payload = {
-          sheet1: {
-            date: eventDate.toISOString().split("T")[0],
-            callerName: formData.get("callerName"),
-            startTime: formData.get("startTime")
-          }
-        };
-
-        const res = await fetch(SHEETY_API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.message || "Sheety error");
-        }
-      }
-
-      modal.classList.add("hidden");
-      showSuccessModal();
-    } catch (err) {
-      alert("Could not save the event: " + err.message);
-    } finally {
-      hideLoader();
-    }
-  };
-
-  const deleteEvent = async (id) => {
-    if (!confirm("Are you sure you want to delete this call?")) return;
-
-    showLoader();
-    try {
-      const res = await fetch(`${SHEETY_API_URL}/${id}`, {
-        method: "DELETE"
-      });
-
-      if (!res.ok) throw new Error("Failed to delete.");
-
-      await fetchEvents();
-    } catch (err) {
-      alert("Delete failed. Try again.");
-    } finally {
-      hideLoader();
-    }
   };
 
   const showSuccessModal = () => {
