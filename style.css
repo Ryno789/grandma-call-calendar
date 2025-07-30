@@ -43,7 +43,6 @@ body {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
 }
 
-
 header {
   text-align: center;
   background-color: var(--header-bg);
@@ -525,5 +524,84 @@ button:hover {
   font-size: 1.2rem;
   font-weight: bold;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+#calendar-sync-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1500;
+  padding: 1rem;
+}
+
+#calendar-sync-modal-content {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  max-width: 450px;
+  width: 100%;
+  font-size: 0.95rem;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+#calendar-sync-modal-content h3 {
+  margin-top: 0;
+  color: var(--header-bg);
+  text-align: center;
+}
+
+#calendar-sync-close-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+#calendar-sync-url-box {
+  display: flex;
+  flex-direction: row;
+  margin-top: 1rem;
+  gap: 0.5rem;
+}
+
+#calendar-sync-url {
+  flex: 1;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+#copy-calendar-url-btn {
+  background-color: var(--button-bg);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+#copy-calendar-url-btn:hover {
+  background-color: var(--button-hover-bg);
+}
+
+#calendar-sync-copied {
+  margin-top: 0.75rem;
+  color: green;
+  font-weight: bold;
   text-align: center;
 }
