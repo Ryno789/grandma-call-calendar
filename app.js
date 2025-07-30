@@ -328,66 +328,25 @@ document.addEventListener("DOMContentLoaded", () => {
   async function generateWebcalUrl() {
     const functionUrl =
       "https://okcewpxneonowzducvjt.supabase.co/functions/v1/calendar-feed";
+    const webcalUrl = functionUrl.replace(/^https:\/\//, "webcal://");
 
-    // Optional: verify it loads
     try {
       const resp = await fetch(functionUrl);
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     } catch (err) {
-      alert("Calendar feed not reachable. Try again shortly.");
+      alert("⚠️ Calendar feed not reachable. Try again shortly.");
       console.error(err);
       return;
     }
 
-    // Convert to webcal://
-    const webcalUrl = functionUrl.replace(/^https:\/\//, "webcal://");
+    // Set the URL in the input box
+    const input = document.getElementById("calendar-sync-url");
+    const copiedMsg = document.getElementById("calendar-sync-copied");
+    input.value = webcalUrl;
+    copiedMsg.classList.add("hidden");
 
-    const instructions = `
-📱 LIVE CALENDAR SYNC INSTRUCTIONS
-
-Your calendar will automatically update when anyone adds/removes calls!
-
-🍎 iPhone/iPad:
-1. Copy this link: ${webcalUrl}
-2. Open Safari and paste the link
-3. Tap "Subscribe" when prompted
-4. Choose which calendar to add it to
-
-🤖 Android:
-1. Install "ICSx⁵" from Google Play Store (free)
-2. Open ICSx⁵ and tap the "+" button
-3. Paste: ${webcalUrl}
-4. Set sync frequency to "Every hour" for faster updates
-
-💻 Google Calendar:
-1. Go to calendar.google.com
-2. Click "+" next to "Other calendars"
-3. Select "From URL"
-4. Paste: ${webcalUrl}
-
-🖥️ Outlook:
-1. Open Outlook Calendar
-2. Go to Add Calendar > From Internet
-3. Paste: ${webcalUrl}
-
-The calendar will check for updates automatically!
-  `;
-
-    alert(instructions);
-
-    try {
-      await navigator.clipboard.writeText(webcalUrl);
-      alert("📋 Webcal URL copied to clipboard!");
-    } catch {
-      // Fallback
-      const ta = document.createElement("textarea");
-      ta.value = webcalUrl;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      document.body.removeChild(ta);
-      alert("📋 Webcal URL copied to clipboard!");
-    }
+    // Show modal
+    document.getElementById("calendar-sync-modal").classList.remove("hidden");
   }
 
   // --- INIT & EVENTS ---
@@ -456,6 +415,30 @@ The calendar will check for updates automatically!
     document
       .getElementById("sync-calendar-btn")
       .addEventListener("click", generateWebcalUrl);
+
+    document
+      .getElementById("calendar-sync-close-btn")
+      .addEventListener("click", () => {
+        document.getElementById("calendar-sync-modal").classList.add("hidden");
+      });
+
+    document
+      .getElementById("copy-calendar-url-btn")
+      .addEventListener("click", () => {
+        const input = document.getElementById("calendar-sync-url");
+        const copiedMsg = document.getElementById("calendar-sync-copied");
+        navigator.clipboard.writeText(input.value).then(() => {
+          copiedMsg.classList.remove("hidden");
+        });
+      });
+
+    document
+      .getElementById("calendar-sync-modal")
+      .addEventListener("click", (e) => {
+        if (e.target.id === "calendar-sync-modal") {
+          e.target.classList.add("hidden");
+        }
+      });
 
     document
       .getElementById("print-btn")
