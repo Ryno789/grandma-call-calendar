@@ -326,26 +326,20 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   async function generateWebcalUrl() {
-    const functionUrl = `${SUPABASE_URL}/functions/v1/calendar-feed`;
+    const functionUrl =
+      "https://okcewpxneonowzducvjt.supabase.co/functions/v1/calendar-feed";
 
-    // call with Authorization header:
-    let resp;
+    // Optional: verify it loads
     try {
-      resp = await fetch(functionUrl, {
-        headers: {
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`
-        }
-      });
-      if (!resp.ok) {
-        throw new Error(`HTTP ${resp.status}`);
-      }
+      const resp = await fetch(functionUrl);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     } catch (err) {
-      alert("Calendar feed not ready. Try again shortly.");
+      alert("Calendar feed not reachable. Try again shortly.");
       console.error(err);
       return;
     }
 
-    // convert to webcal://
+    // Convert to webcal://
     const webcalUrl = functionUrl.replace(/^https:\/\//, "webcal://");
 
     const instructions = `
@@ -385,7 +379,7 @@ The calendar will check for updates automatically!
       await navigator.clipboard.writeText(webcalUrl);
       alert("📋 Webcal URL copied to clipboard!");
     } catch {
-      // fallback
+      // Fallback
       const ta = document.createElement("textarea");
       ta.value = webcalUrl;
       document.body.appendChild(ta);
