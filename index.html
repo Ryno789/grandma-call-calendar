@@ -64,7 +64,7 @@
       </div>
       <div id="actions-section">
         <button id="print-btn">🖨️ Print Month View</button>
-        <button class="active" id="sync-calendar-btn">🔄 Sync with Phone Calendar</button>
+        <button class="active" id="sync-calendar-btn">📅 Subscribe to Calendar</button>
       </div>
     </section>
   </div>
@@ -93,6 +93,34 @@
       </form>
     </div>
   </div>
+
+  <!-- Calendar Sync Modal -->
+  <div id="calendar-sync-modal" class="hidden">
+    <div id="calendar-sync-modal-content">
+      <button id="calendar-sync-close-btn" title="Close">✖</button>
+      <h3>📅 Subscribe to Grandma's Call Calendar</h3>
+      <h5 style="text-align: center;">Instructions for iPhone</h5>
+      <p><strong>Option 1 (Fastest):</strong></p>
+      <ol>
+        <li>Copy the link below</li>
+        <li>Open Safari and paste it</li>
+        <li>Tap "Subscribe" when prompted</li>
+      </ol>
+      <p><strong>Option 2:</strong></p>
+      <ol>
+        <li>Open the Calendar app</li>
+        <li>Tap <em>Calendars</em> at the bottom</li>
+        <li>Tap <em>Add Calendar → Add Subscription Calendar</em></li>
+        <li>Paste the link and tap Subscribe</li>
+      </ol>
+      <div id="calendar-sync-url-box">
+        <input id="calendar-sync-url" readonly value="webcal://loading..." />
+        <button id="copy-calendar-url-btn">📋 Copy</button>
+      </div>
+      <p id="calendar-sync-copied" class="hidden">✅ Copied to clipboard!</p>
+    </div>
+  </div>
+
   <div id="success-modal" class="hidden">
     <div id="success-modal-content">
       <p>✅ Call successfully scheduled!</p>
