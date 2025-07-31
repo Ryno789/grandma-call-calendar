@@ -278,7 +278,8 @@ document.addEventListener("DOMContentLoaded", () => {
     successModal.classList.add("hidden");
     clearTimeout(successTimeout);
   };
-
+  
+  /*
   const generateIcsFile = () => {
     const toUtcFormat = (date, time) => {
       const [y, m, d] = date.split("-").map(Number);
@@ -324,6 +325,7 @@ document.addEventListener("DOMContentLoaded", () => {
     link.click();
     document.body.removeChild(link);
   };
+  */
 
   async function generateWebcalUrl() {
     const functionUrl =
@@ -381,7 +383,33 @@ document.addEventListener("DOMContentLoaded", () => {
       // Add 30 minutes
       startTime.setMinutes(startTime.getMinutes() + 30);
     }
+    // ----EMAIL STUFF -----------------
+      const emailForm = document.getElementById("email-signup-form");
+      const emailInput = document.getElementById("subscriber-email");
+      const signupMsg = document.getElementById("signup-message");
+       /*
+      emailForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = emailInput.value.trim();
 
+        if (!email) return;
+
+        const { data, error } = await supabase
+          .from("email_subscribers")
+          .insert({ email });
+
+        if (error) {
+          console.error("Signup error:", error);
+          alert("Could not sign up. You may already be subscribed.");
+          return;
+        }
+
+        signupMsg.classList.remove("hidden");
+        emailForm.reset();
+      });
+      */
+    // ----END EMAIL STUFF -----------------
+    
     document.getElementById("prev-month-btn").addEventListener("click", () => {
       currentDate.setMonth(currentDate.getMonth() - 1);
       renderCalendar();
