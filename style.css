@@ -113,6 +113,7 @@ button:hover {
 }
 
 .calendar-day {
+  min-height: 60px;
   padding: 0.2rem;
   cursor: pointer;
 }
@@ -146,6 +147,7 @@ button:hover {
 }
 
 .event-dot {
+  display: none;
   position: absolute;
   bottom: 2px;
   left: 50%;
@@ -157,7 +159,12 @@ button:hover {
 }
 
 .event-bar {
-  display: none;
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 400;
+  padding: 2px 4px;
+  margin: 2px auto 0;
+  max-width: 90%;
 } /* Hide bars on mobile, use event list instead */
 
 #daily-events-display {
@@ -604,4 +611,37 @@ button:hover {
   color: green;
   font-weight: bold;
   text-align: center;
+}
+#email-signup-section {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+#email-signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+#subscriber-email {
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  width: 100%;
+}
+
+#email-signup-form button {
+  font-size: 1rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background-color: #17a2b8;
+}
+
+#signup-message {
+  color: green;
+  margin-top: 0.5rem;
+  font-weight: bold;
 }
